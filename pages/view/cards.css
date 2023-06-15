@@ -1,0 +1,44 @@
+/* Define CSS styles here */
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f2f2f2;
+}
+
+.title {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.card {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  background-color: #fff;
+  width: 400px;
+  margin-bottom: 20px;
+}
+
+.card.editable {
+  background-color: #f9f9f9;
+}
+
+.card h3 {
+  margin-top: 0;
+}
+
+.card p {
+  margin-bottom: 10px;
+}
+
+.card .btn-container {
+  text-align: right;
+}
+
+.card .btn-container button {
+  margin-left: 5px;
+  border-radius: 5px;
+}

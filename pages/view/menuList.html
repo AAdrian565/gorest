@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Customer Details</title>
+  <style>
+    /* Define CSS styles here */
+    body {
+      display: flex;
+      flex-wrap: wrap;
+      /* Add flex-wrap property */
+      justify-content: center;
+      align-items: flex-start;
+      /* Change align-items property to flex-start */
+      height: 100vh;
+      background-color: #f2f2f2;
+    }
+
+    .title {
+      margin-bottom: 20px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      background-color: #fff;
+      width: 400px;
+      margin-bottom: 20px;
+    }
+
+    .card.editable {
+      background-color: #f9f9f9;
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .card p {
+      margin-bottom: 10px;
+    }
+
+    .card .btn-container {
+      text-align: right;
+    }
+
+    .card .btn-container button {
+      margin-left: 5px;
+      border-radius: 5px;
+    }
+  </style>
+  <script>
+    // JavaScript code to handle the edit and delete functionality
+    function toggleEditable(cardId) {
+      var card = document.getElementById(cardId);
+      var nameInput = card.querySelector('.name-input');
+      var descriptionInput = card.querySelector('.description-input');
+      var priceInput = card.querySelector('.price-input');
+      var editButton = card.querySelector('.edit-button');
+      var deleteButton = card.querySelector('.delete-button');
+      var saveButton = card.querySelector('.save-button');
+
+      if (card.classList.contains('editable')) {
+        // Save changes
+        card.classList.remove('editable');
+        nameInput.disabled = true;
+        descriptionInput.disabled = true;
+        priceInput.disabled = true;
+        editButton.innerHTML = 'Edit Card';
+        deleteButton.style.display = 'inline';
+        saveButton.style.display = 'none';
+      } else {
+        // Enter edit mode
+        card.classList.add('editable');
+        nameInput.disabled = false;
+        descriptionInput.disabled = false;
+        priceInput.disabled = false;
+        editButton.innerHTML = 'Cancel';
+        deleteButton.style.display = 'none';
+        saveButton.style.display = 'inline';
+      }
+    }
+
+    function deleteCard(cardId) {
+      var card = document.getElementById(cardId);
+      card.parentNode.removeChild(card);
+    }
+  </script>
+</head>
+
+<body>
+  <h1 class="title">Menu</h1>
+
+  <div class="cards-container">
+    {{range .}}
+    <div id="card-{{.Item_ID}}" class="card">
+      <h3>Item ID: {{.Item_ID}}</h3>
+      <p>Name: <input type="text" class="name-input" value="{{.Name}}" disabled></p>
+      <p>Description: <input type="text" class="description-input" value="{{.Description}}" disabled></p>
+      <p>Price: <input type="text" class="price-input" value="{{.Price}}" disabled></p>
+
+      <div class="btn-container">
+        <button class="edit-button" onclick="toggleEditable('card-{{.Item_ID}}')">Edit Card</button>
+        <button class="delete-button" onclick="deleteCard('card-{{.Item_ID}}')">Delete Card</button>
+        <button class="save-button" style="display: none;">Save</button>
+      </div>
+    </div>
+    {{end}}
+  </div>
+</body>
+
+</html>

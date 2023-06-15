@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Button Page</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 200px;
+      height: 200px;
+      margin: 0 10px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #fff;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    #customer {
+      background-color: #FF7F50;
+    }
+
+    #menu {
+      background-color: #00CED1;
+    }
+
+    #order {
+      background-color: #FFD700;
+    }
+
+    .button img {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <a href="/customer" class="button" id="customer">
+    <!-- <img src="./image/profile.png" > -->
+    Customer
+  </a>
+  <a href="/menu" class="button" id="menu">
+    <!-- <img src="./image/book.png" > -->
+    Menu
+  </a>
+  <a href="/order" class="button" id="order">
+    <!-- <img src="./image/invoice.png" > -->
+    Order
+  </a>
+</body>
+</html>

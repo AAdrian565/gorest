@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Customer Details</title>
+  <style>
+    /* Define CSS styles here */
+    body {
+      display: flex;
+      flex-wrap: wrap;
+      /* Add flex-wrap property */
+      justify-content: center;
+      align-items: flex-start;
+      /* Change align-items property to flex-start */
+      height: 100vh;
+      background-color: #f2f2f2;
+    }
+
+    .title {
+      margin-bottom: 20px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      background-color: #fff;
+      width: 400px;
+      margin-bottom: 20px;
+    }
+
+    .card.editable {
+      background-color: #f9f9f9;
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .card p {
+      margin-bottom: 10px;
+    }
+
+    .card .btn-container {
+      text-align: right;
+    }
+
+    .card .btn-container button {
+      margin-left: 5px;
+      border-radius: 5px;
+    }
+  </style>
+  <script>
+    // JavaScript code to handle the edit and delete functionality
+    function toggleEditable(cardId) {
+      var card = document.getElementById(cardId);
+      var nameInput = card.querySelector('.name-input');
+      var emailInput = card.querySelector('.email-input');
+      var phoneNumberInput = card.querySelector('.phone-number-input');
+      var editButton = card.querySelector('.edit-button');
+      var deleteButton = card.querySelector('.delete-button');
+      var saveButton = card.querySelector('.save-button');
+
+      if (card.classList.contains('editable')) {
+        // Save changes
+        card.classList.remove('editable');
+        nameInput.disabled = true;
+        emailInput.disabled = true;
+        phoneNumberInput.disabled = true;
+        editButton.innerHTML = 'Edit Card';
+        deleteButton.style.display = 'inline';
+        saveButton.style.display = 'none';
+      } else {
+        // Enter edit mode
+        card.classList.add('editable');
+        nameInput.disabled = false;
+        emailInput.disabled = false;
+        phoneNumberInput.disabled = false;
+        editButton.innerHTML = 'Cancel';
+        deleteButton.style.display = 'none';
+        saveButton.style.display = 'inline';
+      }
+    }
+
+    function deleteCard(cardId) {
+      var card = document.getElementById(cardId);
+      card.parentNode.removeChild(card);
+    }
+  </script>
+</head>
+
+<body>
+  <h1 class="title">Customer Details</h1>
+
+  <div class="cards-container">
+    {{range .}}
+    <div id="card-{{.Customer_ID}}" class="card">
+      <h3>Card ID: {{.Customer_ID}}</h3>
+      <p>Name: <input type="text" class="name-input" value="{{.Name}}" disabled></p>
+      <p>Email: <input type="text" class="email-input" value="{{.Email}}" disabled></p>
+      <p>Phone Number: <input type="text" class="phone-number-input" value="{{.Phone_Number}}" disabled></p>
+
+      <div class="btn-container">
+        <button class="edit-button" onclick="toggleEditable('card-{{.Customer_ID}}')">Edit Card</button>
+        <button class="delete-button" onclick="deleteCard('card-{{.Customer_ID}}')">Delete Card</button>
+        <button class="save-button" style="display: none;" onclick="saveCard('card-{{.Customer_ID}}')">Save</button>
+      </div>
+    </div>
+    {{end}}
+  </div>
+  <script>
+    function deleteCard(cardId) {
+      const customerId = cardId.split('-')[1];
+      fetch(`/customer/delete?CustomerID=${customerId}`, {
+        method: 'DELETE',
+      })
+        .then((response) => {
+          if (response.ok) {
+            // Remove the card from the DOM
+            const cardElement = document.getElementById(cardId);
+            cardElement.parentNode.removeChild(cardElement);
+          } else {
+            console.error('Failed to delete card:', response.statusText);
+          }
+        })
+        .catch((error) => {
+          console.error('Error deleting card:', error);
+        });
+    }
+    function toggleEditable(cardId) {
+      const cardElement = document.getElementById(cardId);
+      const inputs = cardElement.querySelectorAll('input');
+      const editButton = cardElement.querySelector('.edit-button');
+      const saveButton = cardElement.querySelector('.save-button');
+
+      // Toggle input fields' disabled state
+      inputs.forEach((input) => {
+        input.disabled = !input.disabled;
+      });
+
+      // Toggle visibility of Edit and Save buttons
+      editButton.style.display = editButton.style.display === 'none' ? '' : 'none';
+      saveButton.style.display = saveButton.style.display === 'none' ? '' : 'none';
+    }
+
+    function saveCard(cardId) {
+      const cardElement = document.getElementById(cardId);
+      const customerId = cardId.split('-')[1];
+      const nameInput = cardElement.querySelector('.name-input');
+      const emailInput = cardElement.querySelector('.email-input');
+      const phoneNumberInput = cardElement.querySelector('.phone-number-input');
+
+      const data = {
+        ID: customerId,
+        Name: nameInput.value,
+        Email: emailInput.value,
+        Phone_Number: phoneNumberInput.value,
+      };
+
+      fetch('/menu/edit', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => {
+          if (response.ok) {
+            toggleEditable(cardId);
+          } else {
+            console.error('Failed to save card:', response.statusText);
+          }
+        })
+        .catch((error) => {
+          console.error('Error saving card:', error);
+        });
+    }
+  </script>
+</body>
+
+</html>
